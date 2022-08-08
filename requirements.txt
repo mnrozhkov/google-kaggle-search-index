@@ -1,0 +1,26 @@
+dvc==2.16.0
+dvclive==0.10.0
+faiss-cpu==1.7.2
+matplotlib
+numpy
+pandas
+pyarrow==8.0.0
+python-box==6.0.2
+scikit-learn==1.1.1
+seaborn
+tensorboard
+tensorflow==2.9.1
+torch==1.12.0
+torchvision==0.13.0
+
+# datasets
+tensorflow_datasets
+
+# models 
+efficientnet==1.1.1
+
+# dev 
+deepchecks[vision]==0.8.1
+# image_embeddings==1.4.0
+ipykernel
+jupyter

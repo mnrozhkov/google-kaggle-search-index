@@ -1,0 +1,30 @@
+base:
+  project: search_index
+  models_dir: models
+  reports_dir: reports
+
+data:
+  data_storage_dir: '~/storage/tfds'
+  data_base_dir: '../data'
+  images_dir: 'images'
+  tfrecords_dir: 'tfrecords'
+  embeddings_dir: 'embeddings'
+
+  # 
+  dataset_name: 'tf_flowers'
+
+  # train data
+  # train_dataset: 'embeddings/train'
+
+  # test data
+  test_dataset_name: 'tf_flowers'
+  test_dataset: '' # change to 'embeddings/test'
+
+build_index:
+  models_dir: 'models'
+  model_name: "faiss.index"
+  
+evaluate:
+  metrics_map5: metrics_map5.json
+  metrics_all: metrics_all.csv
+  plots_metrics_all: plot_metrics_all.png

@@ -1,0 +1,4 @@
+# Project structure 
+data/*
+models/*
+notebooks/*

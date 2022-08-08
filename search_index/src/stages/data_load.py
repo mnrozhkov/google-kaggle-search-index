@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 from pathlib import Path
 import tensorflow_datasets as tfds
@@ -34,20 +35,22 @@ def data_load(config_path: Text) -> None:
     ds, ds_info = tfds.load(config.data.dataset_name, 
                         data_dir=STORAGE,
                         split='train', with_info=True)
-    # image_embeddings.downloader.save_examples_to_folder(
-    # output_folder=PATH_IMAGES, images_count=1000, dataset=DATASET
-    # )
     
+    # Save dataset metadata (dataset_info.json)
+    ds_info.write_to_directory(f"{BASEDIR}/{DATASET}")
+    
+    # Save images    
     image_embeddings.downloader.save_examples(ds_info, ds, 1000, PATH_IMAGES)
     
-    # print(f'Dataset info {ds_info}')
-        # Transform image to tf records
+    # Transform image to tf records
     image_embeddings.inference.write_tfrecord(
         image_folder=PATH_IMAGES, output_folder=PATH_TFRECORDS, num_shards=10
     )
+    
+    
+        
 
     
-
 
 if __name__ == '__main__':
 

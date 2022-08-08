@@ -10,7 +10,7 @@ data:
   tfrecords_dir: 'tfrecords'
   embeddings_dir: 'embeddings'
 
-  # 
+  # Dataset
   dataset_name: 'tf_flowers'
 
   # train data
@@ -21,7 +21,7 @@ data:
   test_dataset: '' # change to 'embeddings/test'
 
 build_index:
-  models_dir: 'models'
+  models_dir: 'models'  # TODO: remove (use base)
   model_name: "faiss.index"
   
 evaluate:

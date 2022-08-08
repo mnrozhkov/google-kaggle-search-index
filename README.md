@@ -1,7 +1,7 @@
-Home Credit Default Risk
+Google Universal Image Embedding
 ==============================
 
-Kaggle competition: [https://www.kaggle.com/c/home-credit-default-risk/overview](https://www.kaggle.com/c/home-credit-default-risk/overview)
+Kaggle competition: [https://www.kaggle.com/competitions/google-universal-image-embedding](https://www.kaggle.com/competitions/google-universal-image-embedding)
 
 
 Overview:

@@ -73,7 +73,7 @@ def evaluate(config_path: Text) -> None:
     with open(PATH_METRICS_MAP5 , 'w') as outfile:
         json.dump(report_map_at_5, outfile)
         
-    f, ax = plt.subplots(figsize=(10, 5))
+    f, ax = plt.subplots(figsize=(10, 6))
     ax = sns.heatmap(report.T, annot=True, cmap="YlGnBu")
     ax.set(
         title = 'Metrics for each class', 

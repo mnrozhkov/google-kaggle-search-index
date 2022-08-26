@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 
 ## Run 
-Navigate to `search_index` and run commands
+Navigate to `search_index` and run commands to download data and embedding model before the main pipeline
 
 Load data 
 ```bash

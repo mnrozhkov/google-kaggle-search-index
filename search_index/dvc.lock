@@ -1,38 +1,59 @@
 schema: '2.0'
 stages:
-  build_embeddings:
-    cmd: python src/stages/build_embeddings.py --config=params.yaml
+  data_load:
+    cmd: python src/stages/data_load.py --config=params.yaml
     deps:
-    - path: ../data/tf_flowers/tfrecords
-      md5: f0942e5d8e87cad4857e1407283d0a49.dir
-      size: 11968991
-      nfiles: 10
+    - path: src/stages/data_load.py
+      md5: 0cc70cf45796d62ee0cede546ac96d22
+      size: 2023
     params:
       params.yaml:
         data:
-          data_storage_dir: ~/storage/tfds
+          dataset_name: baseline_split
           data_base_dir: ../data
-          images_dir: images
-          tfrecords_dir: tfrecords
           embeddings_dir: embeddings
-          dataset_name: tf_flowers
-          test_dataset_name: tf_flowers
-          test_dataset: ''
+          embeddings: embeddings.parquet
+          annotations: annotations.csv
+          baseline_split:
+            name: baseline_split
+            data_dir: ../data
+            data_subdir: test
+            is_zipped: true
+            data_zip_filename: baseline_split.zip
+          guie_custom_data_224:
+            name: guie_custom_data_224
+            data_dir: ~/storage/kaggle-guie
+            data_subdir: test
+        data_load:
+          num_examples: all
     outs:
-    - path: ../data/tf_flowers/embeddings
-      md5: 4e543092a58d63805ced12fdadd486fe.dir
-      size: 7850787
-      nfiles: 10
+    - path: ../data/baseline_split/annotations.csv
+      md5: 496cb591dd15cc6557f44a35391d1fb5
+      size: 49165
+  build_embeddings:
+    cmd: python src/stages/build_embeddings.py --config=params.yaml
+    deps:
+    - path: ../data/baseline_split/annotations.csv
+      md5: 496cb591dd15cc6557f44a35391d1fb5
+      size: 49165
+    params:
+      params.yaml:
+        embeddings:
+          models_dir: models
+          model_name: saved_model.pt
+    outs:
+    - path: ../data/baseline_split/embeddings/embeddings.parquet
+      md5: edfb1e4e1fc3dfe3517e40c1d0726040
+      size: 1008790
   build_index:
     cmd: python src/stages/build_index.py --config=params.yaml
     deps:
-    - path: ../data/tf_flowers/embeddings
-      md5: 4e543092a58d63805ced12fdadd486fe.dir
-      size: 7850787
-      nfiles: 10
+    - path: ../data/baseline_split/embeddings/embeddings.parquet
+      md5: edfb1e4e1fc3dfe3517e40c1d0726040
+      size: 1008790
     - path: src/stages/build_index.py
-      md5: f48e055ba00a77fdd3211efdceff9460
-      size: 1130
+      md5: 0407ff8fdde42b0c64a563eabdbe32e6
+      size: 1505
     params:
       params.yaml:
         build_index:
@@ -40,60 +61,34 @@ stages:
           model_name: faiss.index
     outs:
     - path: models/faiss.index
-      md5: 3d92693ff7c129c788281f5b3f2b8423
-      size: 5120045
+      md5: a35608f954d70a9e0fa1e16f6440a321
+      size: 480301
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
     deps:
-    - path: ../data/tf_flowers/embeddings
-      md5: 4e543092a58d63805ced12fdadd486fe.dir
-      size: 7850787
-      nfiles: 10
+    - path: ../data/baseline_split/embeddings/embeddings.parquet
+      md5: edfb1e4e1fc3dfe3517e40c1d0726040
+      size: 1008790
     - path: models/faiss.index
-      md5: 3d92693ff7c129c788281f5b3f2b8423
-      size: 5120045
+      md5: a35608f954d70a9e0fa1e16f6440a321
+      size: 480301
     - path: src/stages/evaluate.py
-      md5: 8866fb9ba5a903c10b3554429ecefe21
-      size: 2993
+      md5: ddea2330c0c135e9945c0081b9602e79
+      size: 3263
     params:
       params.yaml:
         evaluate:
+          reports_dir: reports
           metrics_map5: metrics_map5.json
           metrics_all: metrics_all.csv
           plots_metrics_all: plot_metrics_all.png
     outs:
     - path: reports/metrics_all.csv
-      md5: 0516b4fbd38dfb2b892c6601bdd1a355
-      size: 427
+      md5: e48ef6d46b98f8b85de721815dbe89ae
+      size: 759
     - path: reports/metrics_map5.json
-      md5: 55bbd133d7b4303ca867a58429d30a49
-      size: 183
+      md5: 70cbe50bf6d5e4bbb6c7f094ddb0f13e
+      size: 306
     - path: reports/plot_metrics_all.png
-      md5: 7a71bf1724f1d130064fd193e72d2895
-      size: 237040
-  data_load:
-    cmd: python src/stages/data_load.py --config=params.yaml
-    deps:
-    - path: src/stages/data_load.py
-      md5: 1f30a36b44c5b413f6c5c2d278be99b8
-      size: 1669
-    params:
-      params.yaml:
-        base:
-          project: search_index
-          models_dir: models
-          reports_dir: reports
-        data:
-          data_storage_dir: ~/storage/tfds
-          data_base_dir: ../data
-          images_dir: images
-          tfrecords_dir: tfrecords
-          embeddings_dir: embeddings
-          dataset_name: tf_flowers
-          test_dataset_name: tf_flowers
-          test_dataset: ''
-    outs:
-    - path: ../data/tf_flowers/tfrecords
-      md5: f0942e5d8e87cad4857e1407283d0a49.dir
-      size: 11968991
-      nfiles: 10
+      md5: 827dd4485f7088633fd8b1a15e238dd3
+      size: 300934

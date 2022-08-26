@@ -1,0 +1,11 @@
+md5: fc0fe119966f1fbff13af13e4eae681a
+frozen: true
+deps:
+- path: data/baseline_split.zip
+  repo:
+    url: https://github.com/iterative/google-kaggle-competition-data-pipeline
+    rev_lock: 97922b52a7fff6052cfa8d67bea9e93f72e93dab
+outs:
+- md5: a10dceec1b22b1b3f4bc08e549ddf978
+  size: 292752584
+  path: baseline_split.zip

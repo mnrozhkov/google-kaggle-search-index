@@ -1,6 +1,5 @@
 # Project structure 
 data/*
-models/*
 notebooks/*
 
 # OS 

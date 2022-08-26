@@ -1,30 +1,40 @@
 base:
   project: search_index
-  models_dir: models
-  reports_dir: reports
 
 data:
-  data_storage_dir: '~/storage/tfds'
-  data_base_dir: '../data'
-  images_dir: 'images'
-  tfrecords_dir: 'tfrecords'
-  embeddings_dir: 'embeddings'
+  dataset_name: baseline_split
+  data_base_dir: ../data
+  embeddings_dir: embeddings
+  embeddings: embeddings.parquet
+  annotations: annotations.csv
 
-  # Dataset
-  dataset_name: 'tf_flowers'
 
-  # train data
-  # train_dataset: 'embeddings/train'
+  # Datasets
+  baseline_split:
+    name: baseline_split                  # name of the dataset and directory in 'data_dir' ->  '../data/baseline_split'
+    data_dir: ../data                     # dir that contains data 
+    data_subdir: test                     # subdir to use ->  '../data/baseline_split/test'
+    is_zipped: true
+    data_zip_filename: baseline_split.zip
 
-  # test data
-  test_dataset_name: 'tf_flowers'
-  test_dataset: '' # change to 'embeddings/test'
+  guie_custom_data_224:  # (TBD, not shared)
+    name: guie_custom_data_224
+    data_dir: ~/storage/kaggle-guie
+    data_subdir: test
+
+data_load:
+  num_examples: 'all'                     # Set 'all' to use whole dataset
+
+embeddings:
+  models_dir: models
+  model_name: saved_model.pt
 
 build_index:
-  models_dir: 'models'  # TODO: remove (use base)
-  model_name: "faiss.index"
+  models_dir: models
+  model_name: faiss.index
   
 evaluate:
+  reports_dir: reports
   metrics_map5: metrics_map5.json
   metrics_all: metrics_all.csv
   plots_metrics_all: plot_metrics_all.png

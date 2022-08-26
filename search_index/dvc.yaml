@@ -1,49 +1,47 @@
 stages:
-
   data_load:
     cmd: python src/stages/data_load.py --config=params.yaml
     deps:
     - src/stages/data_load.py
     params:
-    - base
     - data
+    - data_load
     outs:
-    - ${data.data_base_dir}/${data.dataset_name}/${data.tfrecords_dir}  # TODO: split train & test 
-    - ${data.data_base_dir}/${data.dataset_name}/dataset_info.json
+    - ${data.data_base_dir}/${data.dataset_name}/${data.annotations}
 
   build_embeddings:
     cmd: python src/stages/build_embeddings.py --config=params.yaml
     deps:
-    - ${data.data_base_dir}/${data.dataset_name}/${data.tfrecords_dir} 
+    - ${data.data_base_dir}/${data.dataset_name}/${data.annotations}
     params:
-    - data
+    - embeddings
     outs:
-    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir} # TODO: add train/test folders
+    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir}/embeddings.parquet
 
   build_index:
     cmd: python src/stages/build_index.py --config=params.yaml
     deps:
     - src/stages/build_index.py
-    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir} # TODO: change to train data
+    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir}/embeddings.parquet
     params:
     - build_index
     outs:
-    - ${base.models_dir}/${build_index.model_name}
+    - ${build_index.models_dir}/${build_index.model_name}
     
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
     deps:
-    - ${base.models_dir}/${build_index.model_name}
-    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir}
+    - ${build_index.models_dir}/${build_index.model_name}
+    - ${data.data_base_dir}/${data.dataset_name}/${data.embeddings_dir}/embeddings.parquet
     - src/stages/evaluate.py
     params:
     - evaluate
     metrics:
-    - ${base.reports_dir}/${evaluate.metrics_map5}:
+    - ${evaluate.reports_dir}/${evaluate.metrics_map5}:
         cache: false
     plots:
-    - ${base.reports_dir}/${evaluate.plots_metrics_all}:
+    - ${evaluate.reports_dir}/${evaluate.plots_metrics_all}:
         cache: false
     outs: 
-    - ${base.reports_dir}/${evaluate.metrics_all}:
+    - ${evaluate.reports_dir}/${evaluate.metrics_all}:
         cache: false

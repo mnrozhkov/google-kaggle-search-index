@@ -1,6 +1,6 @@
 import argparse
 import faiss 
-import image_embeddings
+import numpy as np
 import os
 import pandas as pd
 from typing import Text
@@ -18,18 +18,26 @@ def build_index(config_path: Text) -> None:
     """
 
     config = load_config(config_path)
+    DATASET_NAME = config.data.dataset_name
     BASEDIR = config.data.data_base_dir
-    DATASET = config.data.dataset_name
-    PATH_EMBEDDINGS = f"{BASEDIR}/{DATASET}/{config.data.embeddings_dir}"
+    PATH_EMBEDDINGS_DIR = f"{BASEDIR}/{DATASET_NAME}/embeddings"
+    PATH_EMBEDDINGS = f"{PATH_EMBEDDINGS_DIR}/embeddings.parquet"
     PATH_INDEX = os.path.join(config.build_index.models_dir, config.build_index.model_name)
     
-    [id_to_name, name_to_id, embeddings] = image_embeddings.knn.read_embeddings(
-        PATH_EMBEDDINGS
-    )
-    index = image_embeddings.knn.build_index(embeddings)
     
-
+    # Load data 
+    emb = pd.read_parquet(PATH_EMBEDDINGS)
+    embeddings = np.stack(emb["embedding"].to_numpy()).astype('float32')
+    
+    # Build index
+    index = faiss.IndexFlatL2(embeddings.shape[1])   # build the index object for vectors size 64
+    index.add(embeddings)                  # add vectors to the index
+    print(f"Index is trained: {index.is_trained}")
+    print(f"Index size total: {index.ntotal}")
+    
+    # Save index
     faiss.write_index(index, PATH_INDEX)
+    print(f"Index saved to: {PATH_INDEX}")
    
 
 if __name__ == '__main__':

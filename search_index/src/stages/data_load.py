@@ -1,55 +1,58 @@
 import argparse
-import json
 import os
+import pandas as pd
 from pathlib import Path
-import tensorflow_datasets as tfds
 from typing import Text
+import zipfile
 
-
-import image_embeddings 
 from src.utils.config import load_config
+from search_index.src.utils import list_all_files
 
 
 def data_load(config_path: Text) -> None:
-    """Load raw data.
+    """Unzip data and prepare annotation.csv file 
     Args:
         config_path {Text}: path to config
     """
 
     config = load_config(config_path)
-    STORAGE = config.data.data_storage_dir
+    DATASET_NAME = config.data.dataset_name
+    DATASET = config.data[DATASET_NAME]
+    STORAGE = DATASET.data_dir
     BASEDIR = config.data.data_base_dir
-    DATASET = config.data.dataset_name
-    PATH_IMAGES = f"{BASEDIR}/{DATASET}/{config.data.images_dir}"
-    PATH_TFRECORDS = f"{BASEDIR}/{DATASET}/{config.data.tfrecords_dir}"
+    PATH_DATASET_ANNOTATIONS = Path(f"{BASEDIR}/{DATASET_NAME}/annotations.csv")
+    PATH_DATASET_SOURCE = Path(STORAGE, DATASET_NAME, DATASET.data_subdir).expanduser()
     
     # Prepare data folder structure
     os.makedirs(BASEDIR, exist_ok=True)
-    os.makedirs(os.path.join(BASEDIR, DATASET), exist_ok=True)
-    os.makedirs(PATH_IMAGES, exist_ok=True)
-    os.makedirs(PATH_TFRECORDS, exist_ok=True)
+    os.makedirs(os.path.join(BASEDIR, DATASET_NAME), exist_ok=True)
+    
+    # Unzip data if needed
+    if DATASET.is_zipped is True:
+        with zipfile.ZipFile(DATASET.data_zip_filename,"r") as zip_ref:
+            zip_ref.extractall(Path(BASEDIR, DATASET_NAME))
 
+    # Extract annotations (from dirs structure)
+    dirs = [f for f in PATH_DATASET_SOURCE.iterdir() if f.is_dir()]
+    frames = []
+    for i, dir in enumerate(dirs):
+        print(dir)
+        paths = list_all_files(dir)
+        frame = pd.DataFrame({
+            'file': paths, 
+            'label': i, 
+            'label_name': dir.relative_to(PATH_DATASET_SOURCE).name,
+            })
+        frames.append(frame)
+
+    # Sample and save annotations
+    annotations = pd.concat(frames, axis=0)
     
-    
-    # Download a dataset
-    ds, ds_info = tfds.load(config.data.dataset_name, 
-                        data_dir=STORAGE,
-                        split='train', with_info=True)
-    
-    # Save dataset metadata (dataset_info.json)
-    ds_info.write_to_directory(f"{BASEDIR}/{DATASET}")
-    
-    # Save images    
-    image_embeddings.downloader.save_examples(ds_info, ds, 1000, PATH_IMAGES)
-    
-    # Transform image to tf records
-    image_embeddings.inference.write_tfrecord(
-        image_folder=PATH_IMAGES, output_folder=PATH_TFRECORDS, num_shards=10
-    )
-    
-    
+    if config.data_load.num_examples != 'all':
+        annotations = annotations.sample(n = config.data_load.num_examples)
+        print(annotations.shape)
         
-
+    annotations.to_csv(PATH_DATASET_ANNOTATIONS, index=False)
     
 
 if __name__ == '__main__':

@@ -44,8 +44,8 @@ Navigate to `search_index` and run commands to download data and embedding model
 
 Load data 
 ```bash
-cd search_index 
-dvc import https://github.com/iterative/dvc get https://github.com/iterative/google-kaggle-competition-data-pipeline data/baseline_split.zip --rev v1.0
+cd search_index
+dvc get https://github.com/iterative/google-kaggle-competition-data-pipeline data/baseline_split.zip --rev v1.0
 echo "baseline_split.zip" >> .gitignore
 ```
 

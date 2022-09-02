@@ -49,7 +49,7 @@ def evaluate(config_path: Text) -> None:
         s_dist, s_ids = index_search(index, embeddings[q.get('id')], k=5)
         q_results = process_search_results(q, s_dist,  s_ids, q_df)
         query_results.update({ q.get('id'): q_results})
-        
+
     # Prepare a report 
     frames = []
     for k in range(1, 6):
@@ -63,11 +63,15 @@ def evaluate(config_path: Text) -> None:
     print(report_map_at_5)
     
     # Save reports and log metrics  
-    PATH_REPORTS_DIR = config.evaluate.reports_dir
-    PATH_METRICS_ALL = Path(PATH_REPORTS_DIR, config.evaluate.metrics_all)
-    PATH_METRICS_MAP5 = Path(PATH_REPORTS_DIR, config.evaluate.metrics_map5)
-    PATH_PLOT_METRICS_ALL = Path(PATH_REPORTS_DIR, config.evaluate.plots_metrics_all)
-    
+    PATH_REPORTS_DIR = Path(config.evaluate.reports_dir)
+    PATH_METRICS_ALL = PATH_REPORTS_DIR / config.evaluate.metrics_all
+    PATH_METRICS_MAP5 = PATH_REPORTS_DIR / config.evaluate.metrics_map5
+    PATH_PLOT_METRICS_ALL = PATH_REPORTS_DIR / config.evaluate.plots_metrics_all
+    QUERY_RESULTS_PATH = PATH_REPORTS_DIR / config.evaluate.query_results
+
+    with open(QUERY_RESULTS_PATH, 'w') as qr_f:
+        json.dump(query_results, qr_f)
+
     report.to_csv(PATH_METRICS_ALL, index=True)
     
     with open(PATH_METRICS_MAP5 , 'w') as outfile:

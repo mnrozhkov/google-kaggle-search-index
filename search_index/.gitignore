@@ -1,3 +1,4 @@
 # Project structure 
 notebooks/*
 baseline_split.zip
+reports/query_results.json

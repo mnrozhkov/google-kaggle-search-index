@@ -1,18 +1,22 @@
-dvc==2.17.0
+dvc==2.24.0
 dvclive==0.10.0
 faiss-cpu==1.7.2
-matplotlib
-numpy
-pandas
-pyarrow==8.0.0
+matplotlib==3.5.3
+numpy==1.23.2
+pandas==1.4.4
+pyarrow==9.0.0
 python-box==6.0.2
-scikit-learn==1.1.1
-seaborn
-tensorboard
-torch==1.12.0
-torchvision==0.13.0
+scikit-learn==1.1.2
+seaborn==0.11.2
+tensorboard==2.10.0
+torch==1.12.1
+torchvision==0.13.1
 
-# dev 
+# dev
 deepchecks[vision]==0.8.1
-ipykernel
-jupyter
+fiftyone==0.16.6
+ipykernel==6.15.2
+ipywidgets==7.7.2
+jupyter==1.0.0
+jupyter_contrib_nbextensions==0.5.1
+umap-learn==0.5.3

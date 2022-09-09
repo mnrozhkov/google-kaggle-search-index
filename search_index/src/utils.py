@@ -47,7 +47,20 @@ def list_all_files(directory, is_relative=True):
 
 def index_search(index, q_emb, k=5):
     xq = np.expand_dims(q_emb, 0)
-    D, I = index.search(xq, k)  # actual search, D - lisdt of distances, I - list of ids 
+
+    # Search one more items than required to be able to exclude the image was queried
+    # Note: FAISS index does not provide possibility to filter or restrict elements
+    # issue example: https://github.com/facebookresearch/faiss/issues/40#issuecomment-286569618
+    D, I = index.search(xq, k + 1)  # actual search, D - lisdt of distances, I - list of ids
+    start_index = 0
+
+    # If the first element is the queried (distance = 0), then increment start index
+    if D[0, 0] == 0:
+        start_index = 1
+
+    D = np.expand_dims(D[0, start_index:start_index+k], axis=0)
+    I = np.expand_dims(I[0, start_index:start_index+k], axis=0)
+
     return D, I
 
 
@@ -58,7 +71,7 @@ def process_search_results(q, D, I, q_df):
     
     # Get result details 
     q_results = [q_df.iloc[i].to_dict() for i in I[0]]
-    [r.update({'distance':d}) for r, d in zip(q_results, D[0])]   # Add distance 
+    [r.update({'distance': float(d)}) for r, d in zip(q_results, D[0])]   # Add distance 
     [r.update({'query_id':q.get('id')}) for r in q_results]       # Add query image id 
     [r.update({'true_label':q.get('label')}) for r in q_results]  # Add true_label
     

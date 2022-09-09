@@ -26,7 +26,8 @@ stages:
     params:
     - build_index
     outs:
-    - ${build_index.models_dir}/${build_index.model_name}
+    - ${build_index.models_dir}/${build_index.model_name}:
+        cache: false
     
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml

@@ -39,8 +39,10 @@ def calculate_map_per_query(query, query_results, k):
 
     # Calculate metrics for each label
     query_metrics = []
-    for q in query: 
-        y_pred = pd.DataFrame(query_results.get(q.get('id'))).label
+    for q in query:
+        # print(f'query_results: {query_results}')
+        # print(query_results[])
+        y_pred = pd.DataFrame(query_results.get(q.get('id')).get('results')).label
         true_label = q.get('label')
         n = query_n.get(true_label, 0)
 

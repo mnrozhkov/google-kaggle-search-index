@@ -31,6 +31,7 @@ def get_embeddings(config_path: Text) -> None:
     PATH_EMBEDDINGS_DIR = Path(BASEDIR, DATASET_NAME, "embeddings")
     PATH_EMBEDDINGS = Path(PATH_EMBEDDINGS_DIR, "embeddings.parquet")
     PATH_EMB_MODEL = Path(config.embeddings.models_dir, config.embeddings.model_name)
+    BATCH_SIZE = config.embeddings.batch_size
     PATH_DATASET_ANNOTATIONS = Path(BASEDIR, DATASET_NAME, "annotations.csv")
     
     # Prepare data folder structure
@@ -54,7 +55,7 @@ def get_embeddings(config_path: Text) -> None:
         transform=data_transform, 
         target_transform=None
     )
-    dataloader = DataLoader(ds, batch_size=8, shuffle=False, num_workers=0)
+    dataloader = DataLoader(ds, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
     annotations = pd.read_csv(PATH_DATASET_ANNOTATIONS)
     
     # Compute embeddings    
@@ -62,7 +63,7 @@ def get_embeddings(config_path: Text) -> None:
     for inputs, labels in tqdm(dataloader):
         inputs = inputs.to(device)
         output = model(inputs)
-        output = output.to(device).data.numpy()
+        output = output.to(device).cpu().data.numpy()
         emb_frames.append(output)
     
     # Save embeddings 

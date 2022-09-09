@@ -26,6 +26,7 @@ data_load:
   num_examples: 'all'                     # Set 'all' to use whole dataset
 
 embeddings:
+  batch_size: 2
   models_dir: models
   model_name: saved_model.pt
 
@@ -38,3 +39,4 @@ evaluate:
   metrics_map5: metrics_map5.json
   metrics_all: metrics_all.csv
   plots_metrics_all: plot_metrics_all.png
+  query_results: query_results.csv

@@ -48,8 +48,14 @@ def evaluate(config_path: Text) -> None:
     for q in tqdm(query): 
         s_dist, s_ids = index_search(index, embeddings[q.get('id')], k=5)
         q_results = process_search_results(q, s_dist,  s_ids, q_df)
-        query_results.update({ q.get('id'): q_results})
-        
+        query_results.update({
+            q.get('id'): {
+                'label_name': q.get('label_name'),
+                'file': q.get('file'),
+                'results': q_results
+            }
+        })
+
     # Prepare a report 
     frames = []
     for k in range(1, 6):
@@ -63,11 +69,24 @@ def evaluate(config_path: Text) -> None:
     print(report_map_at_5)
     
     # Save reports and log metrics  
-    PATH_REPORTS_DIR = config.evaluate.reports_dir
-    PATH_METRICS_ALL = Path(PATH_REPORTS_DIR, config.evaluate.metrics_all)
-    PATH_METRICS_MAP5 = Path(PATH_REPORTS_DIR, config.evaluate.metrics_map5)
-    PATH_PLOT_METRICS_ALL = Path(PATH_REPORTS_DIR, config.evaluate.plots_metrics_all)
-    
+    PATH_REPORTS_DIR = Path(config.evaluate.reports_dir)
+    PATH_METRICS_ALL = PATH_REPORTS_DIR / config.evaluate.metrics_all
+    PATH_METRICS_MAP5 = PATH_REPORTS_DIR / config.evaluate.metrics_map5
+    PATH_PLOT_METRICS_ALL = PATH_REPORTS_DIR / config.evaluate.plots_metrics_all
+    QUERY_RESULTS_PATH = PATH_REPORTS_DIR / config.evaluate.query_results
+
+    query_items = []
+
+    for query_id, query_info in query_results.items():
+        item_df = pd.DataFrame(query_info['results'])
+        item_df['query_id'] = query_id
+        item_df['query_label_name'] = query_info['label_name']
+        item_df['query_file'] = query_info['file']
+        query_items.append(item_df)
+
+    query_results_df = pd.concat(query_items, ignore_index=True)
+    query_results_df.to_csv(QUERY_RESULTS_PATH, index=False)
+
     report.to_csv(PATH_METRICS_ALL, index=True)
     
     with open(PATH_METRICS_MAP5 , 'w') as outfile:

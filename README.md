@@ -42,17 +42,24 @@ pip install -r requirements.txt
 ## Run 
 Navigate to `search_index` and run commands to download data and embedding model before the main pipeline
 
-Load data 
+### Load data 
+
+Set env var `STORAGE_PATH` to a path to dataset storage directory, i.e.
 ```bash
-cd search_index
-dvc get https://github.com/iterative/google-kaggle-competition-data-pipeline data/baseline_split.zip --rev v1.0
+export STORAGE_PATH=~/storage/kaggle-guie
+```
+
+Load a dataset
+```bash
+cd search_index 
+dvc get https://github.com/iterative/google-kaggle-competition-data-pipeline datasets/kaggle_130k --rev pipeline_v2 -o $STORAGE_PATH
 echo "baseline_split.zip" >> .gitignore
 ```
 
-Load model 
+Load model
 
 ```bash 
-dvc import https://github.com/iterative/google-kaggle-competition saved_model.pt -o models/
+dvc get https://github.com/iterative/google-kaggle-competition models/saved_model.pt -o models/
 ```
 
 Run `search_index` pipeline:

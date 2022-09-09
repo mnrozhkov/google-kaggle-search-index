@@ -1,6 +1,8 @@
 # Project structure 
 data/*
 notebooks/*
+search_index/models/*
+
 
 # OS 
 .DS_Store

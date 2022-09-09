@@ -43,8 +43,8 @@ stages:
           model_name: saved_model.pt
     outs:
     - path: ../data/baseline_split/embeddings/embeddings.parquet
-      md5: edfb1e4e1fc3dfe3517e40c1d0726040
-      size: 1008790
+      md5: 8a81b43899b3b871450063218d41e50a
+      size: 1007844
   build_index:
     cmd: python src/stages/build_index.py --config=params.yaml
     deps:

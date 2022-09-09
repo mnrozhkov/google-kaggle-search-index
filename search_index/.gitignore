@@ -1,3 +1,4 @@
 # Project structure 
 notebooks/*
 baseline_split.zip
+models/*

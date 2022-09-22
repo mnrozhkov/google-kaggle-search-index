@@ -39,19 +39,18 @@ stages:
     params:
       params.yaml:
         embeddings:
-          batch_size: 2
           models_dir: models
           model_name: saved_model.pt
     outs:
     - path: ../data/baseline_split/embeddings/embeddings.parquet
-      md5: 3190ee637b76996e00fd0a00840cf580
-      size: 1007720
+      md5: 8a81b43899b3b871450063218d41e50a
+      size: 1007844
   build_index:
     cmd: python src/stages/build_index.py --config=params.yaml
     deps:
     - path: ../data/baseline_split/embeddings/embeddings.parquet
-      md5: 3190ee637b76996e00fd0a00840cf580
-      size: 1007720
+      md5: edfb1e4e1fc3dfe3517e40c1d0726040
+      size: 1008790
     - path: src/stages/build_index.py
       md5: 0407ff8fdde42b0c64a563eabdbe32e6
       size: 1505
@@ -62,20 +61,20 @@ stages:
           model_name: faiss.index
     outs:
     - path: models/faiss.index
-      md5: 33083abed5bfdd4364c0aa9ef53949ac
+      md5: a35608f954d70a9e0fa1e16f6440a321
       size: 480301
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
     deps:
     - path: ../data/baseline_split/embeddings/embeddings.parquet
-      md5: 3190ee637b76996e00fd0a00840cf580
-      size: 1007720
+      md5: edfb1e4e1fc3dfe3517e40c1d0726040
+      size: 1008790
     - path: models/faiss.index
-      md5: 33083abed5bfdd4364c0aa9ef53949ac
+      md5: a35608f954d70a9e0fa1e16f6440a321
       size: 480301
     - path: src/stages/evaluate.py
-      md5: 12d876ef4df8c1532c9565fa60229e34
-      size: 3918
+      md5: 80cf5c76568bc757f9f3d45deabaa070
+      size: 3263
     params:
       params.yaml:
         evaluate:
@@ -83,14 +82,13 @@ stages:
           metrics_map5: metrics_map5.json
           metrics_all: metrics_all.csv
           plots_metrics_all: plot_metrics_all.png
-          query_results: query_results.csv
     outs:
     - path: reports/metrics_all.csv
-      md5: 6cf039c16e658d85d3ffba9d12a6587c
-      size: 901
+      md5: e48ef6d46b98f8b85de721815dbe89ae
+      size: 759
     - path: reports/metrics_map5.json
-      md5: 8f7556c0d808e636efa858ccd3c70659
-      size: 317
+      md5: 70cbe50bf6d5e4bbb6c7f094ddb0f13e
+      size: 306
     - path: reports/plot_metrics_all.png
-      md5: 435439e8ce31b5d661e6b41e353eb9de
-      size: 329283
+      md5: 40392f042dba17a82a12066ed0ab22ab
+      size: 315262

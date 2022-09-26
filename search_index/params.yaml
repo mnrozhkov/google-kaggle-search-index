@@ -2,7 +2,8 @@ base:
   project: search_index
 
 data:
-  dataset_name: baseline_split
+  # dataset_name: baseline_split
+  dataset_name: food_101_small
   data_base_dir: ../data
   embeddings_dir: embeddings
   embeddings: embeddings.parquet
@@ -21,6 +22,12 @@ data:
     name: guie_custom_data_224
     data_dir: ~/storage/kaggle-guie
     data_subdir: test
+
+  food_101_small:
+    name: food_101_small
+    data_dir: ../data
+    data_subdir: .
+
 
 data_load:
   num_examples: 'all'                     # Set 'all' to use whole dataset

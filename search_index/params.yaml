@@ -43,7 +43,7 @@ build_index:
   
 evaluate:
   reports_dir: reports
-  metrics_map5: metrics_map5.json
+  metrics_map5: metrics_map5
   metrics_all: metrics_all.csv
   plots_metrics_all: plot_metrics_all.png
   query_results: query_results.csv

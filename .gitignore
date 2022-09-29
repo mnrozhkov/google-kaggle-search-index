@@ -1,5 +1,6 @@
 # Project structure 
 data/*
+datasets/*
 notebooks/*
 search_index/models/*
 

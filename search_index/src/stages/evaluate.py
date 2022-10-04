@@ -72,7 +72,7 @@ def evaluate(config_path: Text) -> None:
         print(f'Similarity type: {sim_type}')
         frames = []
         
-        for k in range(1, 6):
+        for k in [1, 3, 5]:
             frames.append(calculate_map_per_query(
                 queries, query_results, k=k, sim_type=sim_type
             ))

@@ -3,7 +3,8 @@ base:
 
 data:
   # dataset_name: baseline_split
-  dataset_name: food_101_small
+  # dataset_name: food_101_small
+  dataset_name: triplets_food_101_small_kaggle_130
   data_base_dir: ../data
   embeddings_dir: embeddings
   embeddings: embeddings.parquet
@@ -25,6 +26,11 @@ data:
 
   food_101_small:
     name: food_101_small
+    data_dir: ../data
+    data_subdir: .
+
+  triplets_food_101_small_kaggle_130:
+    name: triplets_food_101_small_kaggle_130
     data_dir: ../data
     data_subdir: .
 

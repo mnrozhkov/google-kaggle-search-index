@@ -2,7 +2,9 @@ base:
   project: search_index
 
 data:
-  dataset_name: baseline_split
+  # dataset_name: baseline_split
+  # dataset_name: food_101_small
+  dataset_name: triplets_food_101_small_kaggle_130
   data_base_dir: ../data
   embeddings_dir: embeddings
   embeddings: embeddings.parquet
@@ -22,6 +24,17 @@ data:
     data_dir: ~/storage/kaggle-guie
     data_subdir: test
 
+  food_101_small:
+    name: food_101_small
+    data_dir: ../data
+    data_subdir: .
+
+  triplets_food_101_small_kaggle_130:
+    name: triplets_food_101_small_kaggle_130
+    data_dir: ../data
+    data_subdir: .
+
+
 data_load:
   num_examples: 'all'                     # Set 'all' to use whole dataset
 
@@ -36,7 +49,7 @@ build_index:
   
 evaluate:
   reports_dir: reports
-  metrics_map5: metrics_map5.json
+  metrics_map5: metrics_map5
   metrics_all: metrics_all.csv
   plots_metrics_all: plot_metrics_all.png
   query_results: query_results.csv
